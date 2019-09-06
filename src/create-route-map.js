@@ -41,6 +41,7 @@ export function createRouteMap (
   }
 }
 
+// 添加路由记录
 function addRouteRecord (
   pathList: Array<string>,
   pathMap: Dictionary<RouteRecord>,
@@ -49,6 +50,7 @@ function addRouteRecord (
   parent?: RouteRecord,
   matchAs?: string
 ) {
+  // 从每个路由配置对象中解构出path和name
   const { path, name } = route
   if (process.env.NODE_ENV !== 'production') {
     assert(path != null, `"path" is required in a route configuration.`)

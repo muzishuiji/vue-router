@@ -17,8 +17,7 @@ export class HashHistory extends History {
     ensureSlash()
   }
 
-  // this is delayed until the app mounts
-  // to avoid the hashchange listener being fired too early
+  // 这是一个延迟,知道app挂载完成,以免hashChange的监听被过早的触发
   setupListeners () {
     const router = this.router
     const expectScroll = router.options.scrollBehavior
@@ -27,7 +26,8 @@ export class HashHistory extends History {
     if (supportsScroll) {
       setupScroll()
     }
-
+    // 开启路由切换的监听,如果支持pushState api,
+    // 则监听popState事件,不支持,则监听hashChange事件
     window.addEventListener(
       supportsPushState ? 'popstate' : 'hashchange',
       () => {
@@ -46,7 +46,7 @@ export class HashHistory extends History {
       }
     )
   }
-
+  // 路由跳转
   push (location: RawLocation, onComplete?: Function, onAbort?: Function) {
     const { current: fromRoute } = this
     this.transitionTo(
@@ -59,7 +59,7 @@ export class HashHistory extends History {
       onAbort
     )
   }
-
+  // 路由替换
   replace (location: RawLocation, onComplete?: Function, onAbort?: Function) {
     const { current: fromRoute } = this
     this.transitionTo(
@@ -72,18 +72,18 @@ export class HashHistory extends History {
       onAbort
     )
   }
-
+  // 前进或后退到某个路由
   go (n: number) {
     window.history.go(n)
   }
-
+  // 更新url
   ensureURL (push?: boolean) {
     const current = this.current.fullPath
     if (getHash() !== current) {
       push ? pushHash(current) : replaceHash(current)
     }
   }
-
+  
   getCurrentLocation () {
     return getHash()
   }

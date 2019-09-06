@@ -4,12 +4,13 @@ import { createRoute, isSameRoute, isIncludedRoute } from '../util/route'
 import { extend } from '../util/misc'
 import { normalizeLocation } from '../util/location'
 import { warn } from '../util/warn'
-
+ 
 // work around weird flow bug
 const toTypes: Array<Function> = [String, Object]
 const eventTypes: Array<Function> = [String, Array]
 
 export default {
+  // 组件名称
   name: 'RouterLink',
   props: {
     to: {
@@ -31,8 +32,11 @@ export default {
     }
   },
   render (h: Function) {
+    // 获取挂载的VueRouter实例
     const router = this.$router
+    // 获取当前路由
     const current = this.$route
+    // 解析出路由的详细信息
     const { location, route, href } = router.resolve(
       this.to,
       current,
@@ -74,7 +78,7 @@ export default {
         }
       }
     }
-
+   
     const on = { click: guardEvent }
     if (Array.isArray(this.event)) {
       this.event.forEach(e => {
@@ -117,6 +121,7 @@ export default {
       data.on = on
       data.attrs = { href }
     } else {
+      // 从子元素中找到第一个a标签,给他绑定事件监听和设置href属性
       // find the first <a> child and apply listener and href
       const a = findAnchor(this.$slots.default)
       if (a) {
@@ -128,6 +133,7 @@ export default {
         aAttrs.href = href
       } else {
         // doesn't have <a> child, apply listener to self
+        // 没有找到a标签,则绑定当前元素自身
         data.on = on
       }
     }

@@ -1,24 +1,39 @@
 /* @flow */
 
 import type VueRouter from './index'
+// 处理path
 import { resolvePath } from './util/path'
+// 工具方法
 import { assert, warn } from './util/warn'
+// 创建路由
 import { createRoute } from './util/route'
+// 填充参数
 import { fillParams } from './util/params'
+// 创建路由映射
 import { createRouteMap } from './create-route-map'
+// 序列化location
 import { normalizeLocation } from './util/location'
 
+// 暴露一个包含match方法和addRoutes方法的Matcher对象
 export type Matcher = {
   match: (raw: RawLocation, current?: Route, redirectedFrom?: Location) => Route;
   addRoutes: (routes: Array<RouteConfig>) => void;
 };
 
+/*
+创建matcher
+@params { Array } routes 初始化的时候传进来的路由配置
+@params { Object } router vueRouter的实例
+ */
 export function createMatcher (
   routes: Array<RouteConfig>,
   router: VueRouter
 ): Matcher {
-  const { pathList, pathMap, nameMap } = createRouteMap(routes)
 
+  // 创建路由映射表, pathList,路由path组成的数组,
+  // pathMap路由path和routeRecord组成的映射表
+  // nameMap路由name和routeRecord组成的映射表
+  const { pathList, pathMap, nameMap } = createRouteMap(routes)
   function addRoutes (routes) {
     createRouteMap(routes, pathList, pathMap, nameMap)
   }
@@ -30,12 +45,14 @@ export function createMatcher (
   ): Route {
     const location = normalizeLocation(raw, currentRoute, false, router)
     const { name } = location
-
+   
     if (name) {
+       // 当前路由对应的name存在则在nameMap中查找对应的record
       const record = nameMap[name]
       if (process.env.NODE_ENV !== 'production') {
         warn(record, `Route with name '${name}' does not exist`)
       }
+      // 如果没找到对应的record则创建对应的record
       if (!record) return _createRoute(null, location)
       const paramNames = record.regex.keys
         .filter(key => !key.optional)
@@ -44,7 +61,7 @@ export function createMatcher (
       if (typeof location.params !== 'object') {
         location.params = {}
       }
-
+      // 复制路由的参数到location中
       if (currentRoute && typeof currentRoute.params === 'object') {
         for (const key in currentRoute.params) {
           if (!(key in location.params) && paramNames.indexOf(key) > -1) {
@@ -127,10 +144,12 @@ export function createMatcher (
       if (process.env.NODE_ENV !== 'production') {
         warn(false, `invalid redirect option: ${JSON.stringify(redirect)}`)
       }
+      // 路由映射表中没找到匹配path和name的路由
       return _createRoute(null, location)
     }
   }
 
+  // 处理路由的别名,并为其对应的创建路由
   function alias (
     record: RouteRecord,
     location: Location,
@@ -161,6 +180,7 @@ export function createMatcher (
     if (record && record.matchAs) {
       return alias(record, location, record.matchAs)
     }
+    // 最终为每个路由创建对应的路由映射信息
     return createRoute(record, location, redirectedFrom, router)
   }
 

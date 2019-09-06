@@ -19,6 +19,7 @@ export class HTML5History extends History {
     }
 
     const initLocation = getLocation(this.base)
+    // window上绑定popstate的事件监听
     window.addEventListener('popstate', e => {
       const current = this.current
 
@@ -36,11 +37,11 @@ export class HTML5History extends History {
       })
     })
   }
-
+  // 前进或者后退到某个路由
   go (n: number) {
     window.history.go(n)
   }
-
+  // 跳转到下一个路由
   push (location: RawLocation, onComplete?: Function, onAbort?: Function) {
     const { current: fromRoute } = this
     this.transitionTo(location, route => {
@@ -49,7 +50,7 @@ export class HTML5History extends History {
       onComplete && onComplete(route)
     }, onAbort)
   }
-
+  // 替换当前路由
   replace (location: RawLocation, onComplete?: Function, onAbort?: Function) {
     const { current: fromRoute } = this
     this.transitionTo(location, route => {
@@ -58,14 +59,14 @@ export class HTML5History extends History {
       onComplete && onComplete(route)
     }, onAbort)
   }
-
+  // 更新url
   ensureURL (push?: boolean) {
     if (getLocation(this.base) !== this.current.fullPath) {
       const current = cleanPath(this.base + this.current.fullPath)
       push ? pushState(current) : replaceState(current)
     }
   }
-
+ 
   getCurrentLocation (): string {
     return getLocation(this.base)
   }
