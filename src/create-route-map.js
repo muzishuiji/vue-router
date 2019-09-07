@@ -3,7 +3,7 @@
 import Regexp from 'path-to-regexp'
 import { cleanPath } from './util/path'
 import { assert, warn } from './util/warn'
-
+ 
 export function createRouteMap (
   routes: Array<RouteConfig>,
   oldPathList?: Array<string>,

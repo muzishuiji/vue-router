@@ -185,7 +185,7 @@ export function createMatcher (
   }
 
   return {
-    match,
+    match, 
     addRoutes
   }
 }

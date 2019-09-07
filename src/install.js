@@ -22,7 +22,7 @@ export function install (Vue) {
   Vue.mixin({
     beforeCreate () {
       if (isDef(this.$options.router)) {
-        // 将根组件的_routerRoot属相指向Vue实例
+        // 将根组件的_routerRoot属性指向Vue实例
         this._routerRoot = this
         // 将根组件_router属性指向传入的router对象
         this._router = this.$options.router
